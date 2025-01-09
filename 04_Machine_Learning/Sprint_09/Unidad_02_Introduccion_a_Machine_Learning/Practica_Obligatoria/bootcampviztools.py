@@ -13,14 +13,17 @@ def pinta_distribucion_categoricas(df, columnas_categoricas, relativa=False, mos
 
     for i, col in enumerate(columnas_categoricas):
         ax = axes[i]
+        df[col] = df[col].dropna()  # Remove valores nulos antes de processar
+        df[col] = df[col].astype('category')  # Converte para tipo categórico, se necessário
+
         if relativa:
             total = df[col].value_counts().sum()
             serie = df[col].value_counts().apply(lambda x: x / total)
-            sns.barplot(x=serie.index, y=serie, ax=ax, palette='viridis', hue = serie.index, legend = False)
+            sns.barplot(x=serie.index, y=serie, ax=ax, palette='viridis')
             ax.set_ylabel('Frecuencia Relativa')
         else:
             serie = df[col].value_counts()
-            sns.barplot(x=serie.index, y=serie, ax=ax, palette='viridis', hue = serie.index, legend = False)
+            sns.barplot(x=serie.index, y=serie, ax=ax, palette='viridis')
             ax.set_ylabel('Frecuencia')
 
         ax.set_title(f'Distribución de {col}')
@@ -34,7 +37,8 @@ def pinta_distribucion_categoricas(df, columnas_categoricas, relativa=False, mos
                             ha='center', va='center', xytext=(0, 9), textcoords='offset points')
 
     for j in range(i + 1, num_filas * 2):
-        axes[j].axis('off')
+        if j < len(axes):
+            axes[j].axis('off')
 
     plt.tight_layout()
     plt.show()
@@ -103,10 +107,10 @@ def plot_categorical_relationship_fin(df, cat_col1, cat_col2, relative_freq=Fals
 def plot_categorical_numerical_relationship(df, categorical_col, numerical_col, show_values=False, measure='mean'):
     # Calcula la medida de tendencia central (mean o median)
     if measure == 'median':
-        grouped_data = df.groupby(by=categorical_col, observed=False)[numerical_col].median()
+        grouped_data = df.groupby(categorical_col)[numerical_col].median()
     else:
         # Por defecto, usa la media
-        grouped_data = df.groupby(by=categorical_col, observed=False)[numerical_col].mean()
+        grouped_data = df.groupby(categorical_col)[numerical_col].mean()
 
     # Ordena los valores
     grouped_data = grouped_data.sort_values(ascending=False)
@@ -205,7 +209,7 @@ def plot_grouped_boxplots(df, cat_col, num_col):
 
 
 
-def plot_grouped_histograms(df, cat_col, num_col, group_size):
+def plot_grouped_histograms(df, cat_col, num_col, group_size, bins = "auto"):
     unique_cats = df[cat_col].unique()
     num_cats = len(unique_cats)
 
@@ -215,7 +219,7 @@ def plot_grouped_histograms(df, cat_col, num_col, group_size):
         
         plt.figure(figsize=(10, 6))
         for cat in subset_cats:
-            sns.histplot(subset_df[subset_df[cat_col] == cat][num_col], kde=True, label=str(cat))
+            sns.histplot(subset_df[subset_df[cat_col] == cat][num_col], kde=True, label=str(cat), bins = bins)
         
         plt.title(f'Histograms of {num_col} for {cat_col} (Group {i//group_size + 1})')
         plt.xlabel(num_col)
