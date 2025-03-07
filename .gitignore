@@ -2,4 +2,7 @@
 .gitignore
 
 /05_Deep_Learning/Sprint_17/Unidad_01/Practica_Obligatoria/data/
-/05_Deep_Learning/Sprint_17/Unidad_02/Ejercicios_Workout/data
+/05_Deep_Learning/Sprint_17/Unidad_02/Ejercicios_Workout/data/
+/05_Deep_Learning/Sprint_17/Unidad_02/Practica_Obligatoria/seg_train/seg_train/
+/05_Deep_Learning/Sprint_17/Unidad_02/Practica_Obligatoria/seg_test/seg_test/
+/05_Deep_Learning/Sprint_17/Unidad_02/Practica_Obligatoria/seg_pred/seg_pred/
